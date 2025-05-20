@@ -46,6 +46,22 @@
                 <source>link.back_to_list</source>
                 <target>Powrót do listy</target>
             </trans-unit>
+            <trans-unit id="title.question_view" resname="title.question_view">
+                <source>title.question_view</source>
+                <target>Widok pytania</target>
+            </trans-unit>
+            <trans-unit id="label.created_at" resname="label.created_at">
+                <source>label.created_at</source>
+                <target>Data utworzenia</target>
+            </trans-unit>
+            <trans-unit id="label.updated_at" resname="label.updated_at">
+                <source>label.updated_at</source>
+                <target>Data aktualizacji</target>
+            </trans-unit>
+            <trans-unit id="title.question_list" resname="title.question_list">
+                <source>title.question_list</source>
+                <target>Lista pytań</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

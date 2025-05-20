@@ -38,6 +38,30 @@
         <source>title.record_view</source>
         <target>Record view #%id%</target>
       </trans-unit>
+      <trans-unit id="title.question_view" resname="title.question_view">
+        <source>title.question_view</source>
+        <target>Question view</target>
+      </trans-unit>
+      <trans-unit id="label.created_at" resname="label.created_at">
+        <source>label.created_at</source>
+        <target>Created at</target>
+      </trans-unit>
+      <trans-unit id="label.updated_at" resname="label.updated_at">
+        <source>label.updated_at</source>
+        <target>Updated at</target>
+      </trans-unit>
+      <trans-unit id="link.back_to_list" resname="link.back_to_list">
+        <source>link.back_to_list</source>
+        <target>Back to list</target>
+      </trans-unit>
+      <trans-unit id="title.question_list" resname="title.question_list">
+        <source>title.question_list</source>
+        <target>Question list</target>
+      </trans-unit>
+      <trans-unit id="link.show" resname="link.show">
+        <source>link.show</source>
+        <target>Show</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

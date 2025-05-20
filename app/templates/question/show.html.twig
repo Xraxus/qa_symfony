@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title.question_view'|trans({'%id%': question.id}) }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.question_view'|trans({'%id%': question.id}) }}</h1>
+    {% if question is defined %}
+        <dl>
+            <dt>{{ 'label.title'|trans }}</dt>
+            <dd>{{ question.title }}</dd>
+
+            <dt>{{ 'label.content'|trans }}</dt>
+            <dd>{{ question.content }}</dd>
+
+            <dt>{{ 'label.created_at'|trans }}</dt>
+            <dd>{{ question.createdAt ? question.createdAt|date('Y-m-d H:i') : '' }}</dd>
+
+            <dt>{{ 'label.updated_at'|trans }}</dt>
+            <dd>{{ question.updatedAt ? question.updatedAt|date('Y-m-d H:i') : '' }}</dd>
+        </dl>
+        <a href="{{ url('question_list') }}" class="btn btn-secondary">
+            {{ 'link.back_to_list'|trans }}
+        </a>
+    {% else %}
+        <p>{{ 'message.record_not_found'|trans }}</p>
+    {% endif %}
+{% endblock %}

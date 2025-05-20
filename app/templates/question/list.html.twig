@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ 'title.question_list'|trans }}
+{% endblock %}
+
+{% block body %}
+    <h1>{{ 'title.question_list'|trans }}</h1>
+    {% if questions is defined and questions|length %}
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>{{ 'label.id'|trans }}</th>
+                <th>{{ 'label.title'|trans }}</th>
+                <th>{{ 'label.actions'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for question in questions %}
+                <tr>
+                    <td>{{ question.id }}</td>
+                    <td>{{ question.title }}</td>
+                    <td>
+                        <a href="{{ url('question_show', {'id': question.id}) }}" class="btn btn-sm btn-primary">
+                            {{ 'link.show'|trans }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ 'message.empty_list'|trans }}</p>
+    {% endif %}
+{% endblock %}

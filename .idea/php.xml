@@ -179,6 +179,9 @@
       <path value="$PROJECT_DIR$/app/vendor/fidry/cpu-core-counter" />
       <path value="$PROJECT_DIR$/app/vendor/squizlabs/php_codesniffer" />
       <path value="$PROJECT_DIR$/app/vendor/escapestudios/symfony2-coding-standard" />
+      <path value="$PROJECT_DIR$/app/vendor/doctrine/data-fixtures" />
+      <path value="$PROJECT_DIR$/app/vendor/doctrine/doctrine-fixtures-bundle" />
+      <path value="$PROJECT_DIR$/app/vendor/fakerphp/faker" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
