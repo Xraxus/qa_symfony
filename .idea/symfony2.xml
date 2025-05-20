@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Symfony2PluginSettings">
+    <option name="pathToTranslation" value="app/var/cache/dev/translations" />
+    <option name="directoryToWeb" value="app/public" />
+    <option name="pluginEnabled" value="true" />
+    <option name="twigNamespaces">
+      <list>
+        <twig_namespace custom="true" namespaceType="ADD_PATH" path="app/templates" />
+        <twig_namespace custom="true" namespace="Doctrine" namespaceType="ADD_PATH" path="app/vendor/doctrine/doctrine-bundle" />
+        <twig_namespace custom="true" namespace="DoctrineMigrations" namespaceType="ADD_PATH" path="app/vendor/doctrine/doctrine-migrations-bundle" />
+      </list>
+    </option>
+    <option name="containerFiles">
+      <list>
+        <container_file path="app/var/cache/dev/App_KernelDevDebugContainer.xml" />
+      </list>
+    </option>
+    <option name="routingFiles">
+      <list>
+        <routing_file path="app/var/cache/dev/url_generating_routes.php" />
+      </list>
+    </option>
+  </component>
+</project>
