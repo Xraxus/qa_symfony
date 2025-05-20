@@ -62,6 +62,22 @@
         <source>link.show</source>
         <target>Show</target>
       </trans-unit>
+      <trans-unit id="label.comment" resname="label.comment">
+        <source>label.comment</source>
+        <target>Comment</target>
+      </trans-unit>
+      <trans-unit id="pagination.previous" resname="pagination.previous">
+        <source>pagination.previous</source>
+        <target>Previous</target>
+      </trans-unit>
+      <trans-unit id="pagination.page" resname="pagination.page">
+        <source>pagination.page</source>
+        <target>Page %current% of %total%</target>
+      </trans-unit>
+      <trans-unit id="pagination.next" resname="pagination.next">
+        <source>pagination.next</source>
+        <target>Next</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

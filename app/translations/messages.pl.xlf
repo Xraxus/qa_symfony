@@ -62,6 +62,22 @@
                 <source>title.question_list</source>
                 <target>Lista pytań</target>
             </trans-unit>
+            <trans-unit id="label.comment" resname="label.comment">
+                <source>label.comment</source>
+                <target>Komentarz</target>
+            </trans-unit>
+            <trans-unit id="pagination.previous" resname="pagination.previous">
+                <source>pagination.previous</source>
+                <target>Poprzednia</target>
+            </trans-unit>
+            <trans-unit id="pagination.page" resname="pagination.page">
+                <source>pagination.page</source>
+                <target>Strona %current% z %total%</target>
+            </trans-unit>
+            <trans-unit id="pagination.next" resname="pagination.next">
+                <source>pagination.next</source>
+                <target>Następna</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

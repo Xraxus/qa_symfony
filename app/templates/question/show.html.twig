@@ -14,13 +14,16 @@
             <dt>{{ 'label.content'|trans }}</dt>
             <dd>{{ question.content }}</dd>
 
+            <dt>{{ 'label.comment'|trans }}</dt>
+            <dd>{{ question.comment ?: '-' }}</dd>
+
             <dt>{{ 'label.created_at'|trans }}</dt>
             <dd>{{ question.createdAt ? question.createdAt|date('Y-m-d H:i') : '' }}</dd>
 
             <dt>{{ 'label.updated_at'|trans }}</dt>
             <dd>{{ question.updatedAt ? question.updatedAt|date('Y-m-d H:i') : '' }}</dd>
         </dl>
-        <a href="{{ url('question_list') }}" class="btn btn-secondary">
+        <a href="{{ path('question_list') }}" class="btn btn-secondary">
             {{ 'link.back_to_list'|trans }}
         </a>
     {% else %}
