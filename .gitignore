@@ -1,0 +1,15 @@
+# PhpStorm local files
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+# interpreter configs
+*.iml
+
+# standard ignores
+vendor/
+var/
+.env
+
+.php_cs.cache
+.php-cs-fixer.cache
+.phpunit.result.cache
