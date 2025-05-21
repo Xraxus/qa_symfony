@@ -44,6 +44,7 @@
         "symfony/web-link": "6.4.*",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
+        "twig/intl-extra": "*",
         "twig/twig": "^2.12|^3.0"
     },
     "config": {
@@ -100,6 +101,10 @@
         "init-app" : [
             "./bin/console --no-interaction doctrine:migrations:migrate",
             "./bin/console --no-interaction doctrine:fixtures:load"
+        ],
+        "missing-trans" : [
+            "bin/console debug:translation en --only-missing",
+            "bin/console debug:translation pl --only-missing"
         ]
     },
     "conflict": {

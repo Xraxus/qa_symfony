@@ -11,8 +11,10 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>{{ 'label.id'|trans }}</th>
-                <th>{{ 'label.title'|trans }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.id'|trans, 'question.id') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.created_at'|trans, 'question.createdAt') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.updated_at'|trans, 'question.updatedAt') }}</th>
+                <th>{{ knp_pagination_sortable(pagination, 'label.title'|trans, 'question.title') }}</th>
                 <th>{{ 'label.actions'|trans }}</th>
             </tr>
             </thead>
@@ -20,6 +22,8 @@
             {% for question in pagination %}
                 <tr>
                     <td>{{ question.id }}</td>
+                    <td>{{ question.createdAt|format_date('long') }}</td>
+                    <td>{{ question.updatedAt|format_date('long') }}</td>
                     <td>{{ question.title }}</td>
                     <td>
                         <a href="{{ path('question_show', {'id': question.id}) }}" class="btn btn-sm btn-primary">
@@ -32,41 +36,9 @@
         </table>
 
         <nav aria-label="Page navigation">
-            <ul class="pagination">
-
-                {# Poprzednia strona #}
-                {% if pagination.page > 1 %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ path('question_list', {page: pagination.page - 1}) }}" aria-label="{{ 'pagination.previous'|trans }}">
-                            &laquo; {{ 'pagination.previous'|trans }}
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&laquo; {{ 'pagination.previous'|trans }}</span>
-                    </li>
-                {% endif %}
-
-                {# Aktualna strona i total stron #}
-                <li class="page-item disabled">
-                    <span class="page-link">
-                        {{ 'pagination.page'|trans({'%current%': pagination.page, '%total%': pagination.pageCount}) }}
-                    </span>
-                </li>
-
-                {# Następna strona #}
-                {% if pagination.page < pagination.pageCount %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ path('question_list', {page: pagination.page + 1}) }}" aria-label="{{ 'pagination.next'|trans }}">
-                            {{ 'pagination.next'|trans }} &raquo;
-                        </a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <span class="page-link">{{ 'pagination.next'|trans }} &raquo;</span>
-                    </li>
-                {% endif %}
-            </ul>
+            <div class="navigation text-center">
+                {{ knp_pagination_render(pagination) }}
+            </div>
         </nav>
 
     {% else %}

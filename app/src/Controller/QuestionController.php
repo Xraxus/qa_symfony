@@ -8,25 +8,36 @@ use App\Entity\Question;
 use App\Repository\QuestionRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 class QuestionController extends AbstractController
 {
-    #[Route('/question', name: 'question_list')]
+    /**
+     * Displays paginated list of questions.
+     *
+     * @param QuestionRepository $questionRepository Repository for question entities
+     * @param PaginatorInterface $paginator          KNP paginator for paginating results
+     * @param int                $page               Page number from query string (default: 1)
+     *
+     * @return Response HTTP response with paginated question list
+     */
+    #[Route('/question', name: 'question_list', methods: ['GET'])]
     public function list(
         QuestionRepository $questionRepository,
         PaginatorInterface $paginator,
-        Request $request,
+        #[MapQueryParameter] int $page = 1,
     ): Response {
-        $queryBuilder = $questionRepository->createQueryBuilder('q')
-            ->orderBy('q.createdAt', 'DESC');
-
         $pagination = $paginator->paginate(
-            $queryBuilder, /* zapytanie lub QueryBuilder */
-            $request->query->getInt('page', 1), /* numer strony, domyślnie 1 */
-            10 /* limit elementów na stronę */
+            $questionRepository->queryAll(),
+            $page,
+            QuestionRepository::PAGINATOR_ITEMS_PER_PAGE,
+            [
+                'sortFieldAllowList' => ['question.id', 'question.createdAt', 'question.updatedAt', 'question.title'],
+                'defaultSortFieldName' => 'question.updatedAt',
+                'defaultSortDirection' => 'desc',
+            ]
         );
 
         return $this->render('question/list.html.twig', [
@@ -34,7 +45,14 @@ class QuestionController extends AbstractController
         ]);
     }
 
-    #[Route('/question/{id}', name: 'question_show')]
+    /**
+     * Displays a single question.
+     *
+     * @param Question $question Question entity
+     *
+     * @return Response HTTP response with question detail view
+     */
+    #[Route('/question/{id}', name: 'question_show', methods: ['GET'])]
     public function show(Question $question): Response
     {
         return $this->render('question/show.html.twig', [

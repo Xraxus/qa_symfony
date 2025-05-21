@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Question;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,9 +12,25 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class QuestionRepository extends ServiceEntityRepository
 {
+    /**
+     * Items per page.
+     *
+     * Use constants to define configuration options that rarely change instead
+     * of specifying them in configuration files.
+     * See https://symfony.com/doc/current/best_practices.html#configuration
+     *
+     * @constant int
+     */
+    public const PAGINATOR_ITEMS_PER_PAGE = 10;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Question::class);
+    }
+
+    public function queryAll(): QueryBuilder
+    {
+        return $this->createQueryBuilder('question');
     }
 
     //    /**
