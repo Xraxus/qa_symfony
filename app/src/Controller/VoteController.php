@@ -2,80 +2,73 @@
 
 namespace App\Controller;
 
+use App\Entity\Answer;
+use App\Entity\Comment;
 use App\Entity\Vote;
-use App\Form\VoteForm;
-use App\Repository\VoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/vote')]
-final class VoteController extends AbstractController
+class VoteController extends AbstractController
 {
-    #[Route(name: 'app_vote_index', methods: ['GET'])]
-    public function index(VoteRepository $voteRepository): Response
+    #[Route('/vote/answer/{id}/{value}', name: 'vote_answer', methods: ['POST'])]
+    public function voteAnswer(Answer $answer, int $value, EntityManagerInterface $em, Security $security): Response
     {
-        return $this->render('vote/index.html.twig', [
-            'votes' => $voteRepository->findAll(),
-        ]);
-    }
+        $user = $security->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException();
+        }
 
-    #[Route('/new', name: 'app_vote_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
+        // Check for existing vote
+        foreach ($answer->getVotes() as $existingVote) {
+            if ($existingVote->getUser() === $user) {
+                $existingVote->setValue($value);
+                $em->flush();
+                return $this->redirectToRoute('question_show', ['id' => $answer->getQuestion()->getId()]);
+            }
+        }
+
+        // New vote
         $vote = new Vote();
-        $form = $this->createForm(VoteForm::class, $vote);
-        $form->handleRequest($request);
+        $vote->setUser($user)
+            ->setAnswer($answer)
+            ->setValue($value);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($vote);
-            $entityManager->flush();
+        $em->persist($vote);
+        $em->flush();
 
-            return $this->redirectToRoute('app_vote_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('vote/new.html.twig', [
-            'vote' => $vote,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('question_show', ['id' => $answer->getQuestion()->getId()]);
     }
 
-    #[Route('/{id}', name: 'app_vote_show', methods: ['GET'])]
-    public function show(Vote $vote): Response
+    #[Route('/vote/comment/{id}/{value}', name: 'vote_comment', methods: ['POST'])]
+    public function voteComment(Comment $comment, int $value, EntityManagerInterface $em, Security $security): Response
     {
-        return $this->render('vote/show.html.twig', [
-            'vote' => $vote,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_vote_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Vote $vote, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(VoteForm::class, $vote);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_vote_index', [], Response::HTTP_SEE_OTHER);
+        $user = $security->getUser();
+        if (!$user) {
+            throw $this->createAccessDeniedException();
         }
 
-        return $this->render('vote/edit.html.twig', [
-            'vote' => $vote,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_vote_delete', methods: ['POST'])]
-    public function delete(Request $request, Vote $vote, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$vote->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($vote);
-            $entityManager->flush();
+        // Check for existing vote
+        foreach ($comment->getVotes() as $existingVote) {
+            if ($existingVote->getUser() === $user) {
+                $existingVote->setValue($value);
+                $em->flush();
+                return $this->redirectToRoute('question_show', ['id' => $comment->getAnswer()->getQuestion()->getId()]);
+            }
         }
 
-        return $this->redirectToRoute('app_vote_index', [], Response::HTTP_SEE_OTHER);
+        // New vote
+        $vote = new Vote();
+        $vote->setUser($user)
+            ->setComment($comment)
+            ->setValue($value);
+
+        $em->persist($vote);
+        $em->flush();
+
+        return $this->redirectToRoute('question_show', ['id' => $comment->getAnswer()->getQuestion()->getId()]);
     }
 }
