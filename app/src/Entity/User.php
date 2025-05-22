@@ -219,4 +219,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     // Dodać logikę sprawdzającą czy można odebrać komuś rolę admina
     // np. w UserManager lub UserService – tam sprawdzasz, czy jest więcej niż 1 admin
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 }

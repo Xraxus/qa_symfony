@@ -143,4 +143,11 @@ class Comment
     {
         return array_reduce($this->votes->toArray(), fn(int $carry, Vote $vote) => $carry + $vote->getValue(), 0);
     }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
 }
