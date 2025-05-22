@@ -30,7 +30,7 @@ class QuestionRepository extends ServiceEntityRepository
 
     public function queryAll(): QueryBuilder
     {
-        return $this->createQueryBuilder('question');
+        return $this->createQueryBuilder('q');
     }
 
 
