@@ -29,20 +29,17 @@ class Comment
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Question $question = null;
 
-    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\ManyToOne]
     private ?User $author = null;
 
-    #[ORM\OneToMany(mappedBy: 'comment', targetEntity: Vote::class, orphanRemoval: true)]
-    private Collection $votes;
 
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->votes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -110,39 +107,6 @@ class Comment
         return $this;
     }
 
-    /**
-     * @return Collection<int, Vote>
-     */
-    public function getVotes(): Collection
-    {
-        return $this->votes;
-    }
-
-    public function addVote(Vote $vote): static
-    {
-        if (!$this->votes->contains($vote)) {
-            $this->votes->add($vote);
-            $vote->setComment($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVote(Vote $vote): static
-    {
-        if ($this->votes->removeElement($vote)) {
-            if ($vote->getComment() === $this) {
-                $vote->setComment(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getVoteScore(): int
-    {
-        return array_reduce($this->votes->toArray(), fn(int $carry, Vote $vote) => $carry + $vote->getValue(), 0);
-    }
 
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {

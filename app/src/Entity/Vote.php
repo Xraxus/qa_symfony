@@ -15,14 +15,14 @@ class Vote
     private ?int $id = null;
 
     // Głos może dotyczyć odpowiedzi
-    #[ORM\ManyToOne(inversedBy: 'votes')]
+    #[ORM\ManyToOne]
     private ?Answer $answer = null;
 
     // Głos może dotyczyć komentarza
-    #[ORM\ManyToOne(inversedBy: 'votes')]
+    #[ORM\ManyToOne]
     private ?Comment $comment = null;
 
-    #[ORM\ManyToOne(inversedBy: 'votes')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 

@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\AnswerRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,29 +16,28 @@ class Answer
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $content = null;
+    private string $content;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(options: ['default' => false])]
     private bool $isBest = false;
 
-    #[ORM\ManyToOne(inversedBy: 'answers')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Question $question = null;
+    private Question $question;
 
-    #[ORM\ManyToOne(inversedBy: 'answers')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $author = null;
+    private User $author;
 
-    #[ORM\OneToMany(mappedBy: 'answer', targetEntity: Vote::class, orphanRemoval: true)]
-    private \Doctrine\Common\Collections\Collection $votes;
-
-    public function __construct()
+    public function __construct(Question $question, User $author, string $content)
     {
         $this->createdAt = new \DateTimeImmutable();
-        $this->votes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->question = $question;
+        $this->author = $author;
+        $this->content = $content;
     }
 
     public function getId(): ?int
@@ -48,7 +45,7 @@ class Answer
         return $this->id;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -60,7 +57,7 @@ class Answer
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -70,76 +67,39 @@ class Answer
         return $this->isBest;
     }
 
-    public function setIsBest(bool $isBest): static
+    public function setBest(bool $isBest): static
     {
         $this->isBest = $isBest;
 
         return $this;
     }
 
-    public function getQuestion(): ?Question
+    public function getQuestion(): Question
     {
         return $this->question;
     }
 
-    public function setQuestion(?Question $question): static
+    public function setQuestion(Question $question): static
     {
         $this->question = $question;
 
         return $this;
     }
 
-    public function getAuthor(): ?User
+    public function getAuthor(): User
     {
         return $this->author;
     }
 
-    public function setAuthor(?User $author): static
+    public function setAuthor(User $author): static
     {
         $this->author = $author;
 
         return $this;
     }
 
-    /**
-     * @return \Doctrine\Common\Collections\Collection<int, Vote>
-     */
-    public function getVotes(): \Doctrine\Common\Collections\Collection
+    public function __toString(): string
     {
-        return $this->votes;
-    }
-
-    public function addVote(Vote $vote): static
-    {
-        if (!$this->votes->contains($vote)) {
-            $this->votes->add($vote);
-            $vote->setAnswer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeVote(Vote $vote): static
-    {
-        if ($this->votes->removeElement($vote)) {
-            // set the owning side to null (unless already changed)
-            if ($vote->getAnswer() === $this) {
-                $vote->setAnswer(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getVoteScore(): int
-    {
-        return array_reduce($this->votes->toArray(), fn(int $carry, Vote $vote) => $carry + $vote->getValue(), 0);
-    }
-
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
+        return mb_substr($this->content, 0, 50).(mb_strlen($this->content) > 50 ? '...' : '');
     }
 }

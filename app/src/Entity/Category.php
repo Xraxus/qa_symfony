@@ -22,12 +22,8 @@ class Category
     #[ORM\Column(length: 255, unique: true)]
     private string $slug;
 
-    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Question::class)]
-    private Collection $questions;
-
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -59,32 +55,4 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection<int, Question>
-     */
-    public function getQuestions(): Collection
-    {
-        return $this->questions;
-    }
-
-    public function addQuestion(Question $question): static
-    {
-        if (!$this->questions->contains($question)) {
-            $this->questions[] = $question;
-            $question->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuestion(Question $question): static
-    {
-        if ($this->questions->removeElement($question)) {
-            if ($question->getCategory() === $this) {
-                $question->setCategory(null);
-            }
-        }
-
-        return $this;
-    }
 }

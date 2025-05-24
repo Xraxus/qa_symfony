@@ -35,31 +35,21 @@ class Question
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null; // ścieżka do pliku
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'questions')]
+    #[ORM\ManyToMany(targetEntity: Tag::class)]
     private Collection $tags;
 
-    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Answer::class, orphanRemoval: true)]
-    private Collection $answers;
-
-    #[ORM\OneToMany(mappedBy: 'question', targetEntity: Comment::class, orphanRemoval: true)]
-    private Collection $comments;
-
-    #[ORM\ManyToOne]
-    private ?Answer $bestAnswer = null;
 
     public function __construct()
     {
         $this->tags = new ArrayCollection();
-        $this->answers = new ArrayCollection();
-        $this->comments = new ArrayCollection();
     }
 
     // Gettery i settery dla pól — skrócona wersja dla kluczowych:
@@ -176,62 +166,5 @@ class Question
         return $this;
     }
 
-    public function getAnswers(): Collection
-    {
-        return $this->answers;
-    }
 
-    public function addAnswer(Answer $answer): static
-    {
-        if (!$this->answers->contains($answer)) {
-            $this->answers->add($answer);
-            $answer->setQuestion($this);
-        }
-        return $this;
-    }
-
-    public function removeAnswer(Answer $answer): static
-    {
-        if ($this->answers->removeElement($answer)) {
-            if ($answer->getQuestion() === $this) {
-                $answer->setQuestion(null);
-            }
-        }
-        return $this;
-    }
-
-    public function getComments(): Collection
-    {
-        return $this->comments;
-    }
-
-    public function addComment(Comment $comment): static
-    {
-        if (!$this->comments->contains($comment)) {
-            $this->comments->add($comment);
-            $comment->setQuestion($this);
-        }
-        return $this;
-    }
-
-    public function removeComment(Comment $comment): static
-    {
-        if ($this->comments->removeElement($comment)) {
-            if ($comment->getQuestion() === $this) {
-                $comment->setQuestion(null);
-            }
-        }
-        return $this;
-    }
-
-    public function getBestAnswer(): ?Answer
-    {
-        return $this->bestAnswer;
-    }
-
-    public function setBestAnswer(?Answer $bestAnswer): static
-    {
-        $this->bestAnswer = $bestAnswer;
-        return $this;
-    }
 }
