@@ -185,6 +185,9 @@
       <path value="$PROJECT_DIR$/app/vendor/knplabs/knp-components" />
       <path value="$PROJECT_DIR$/app/vendor/knplabs/knp-paginator-bundle" />
       <path value="$PROJECT_DIR$/app/vendor/twig/intl-extra" />
+      <path value="$PROJECT_DIR$/app/vendor/gedmo/doctrine-extensions" />
+      <path value="$PROJECT_DIR$/app/vendor/stof/doctrine-extensions-bundle" />
+      <path value="$PROJECT_DIR$/app/vendor/behat/transliterator" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

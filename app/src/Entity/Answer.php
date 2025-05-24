@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\AnswerRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AnswerRepository::class)]
 #[ORM\Table(name: 'answers')]
@@ -12,32 +14,43 @@ class Answer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    private string $content;
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    private ?string $content = null;
 
-    #[ORM\Column]
-    private \DateTimeImmutable $createdAt;
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(options: ['default' => false])]
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private bool $isBest = false;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(targetEntity: Question::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: false)]
-    private Question $question;
+    #[Assert\NotNull]
+    private ?Question $question = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $author;
+    // Nullable author - może być null dla anonimów
+    #[ORM\ManyToOne(targetEntity: User::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $author = null;
 
-    public function __construct(Question $question, User $author, string $content)
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Type('string')]
+    private ?string $authorNickname = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Email]
+    private ?string $authorEmail = null;
+
+    public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->question = $question;
-        $this->author = $author;
-        $this->content = $content;
+        // Możesz ustawić tutaj domyślne wartości, jeśli chcesz
+        $this->isBest = false;
     }
 
     public function getId(): ?int
@@ -45,19 +58,17 @@ class Answer
         return $this->id;
     }
 
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(?string $content): void
     {
         $this->content = $content;
-
-        return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
@@ -67,39 +78,54 @@ class Answer
         return $this->isBest;
     }
 
-    public function setBest(bool $isBest): static
+    public function setIsBest(bool $isBest): void
     {
         $this->isBest = $isBest;
-
-        return $this;
     }
 
-    public function getQuestion(): Question
+    public function getQuestion(): ?Question
     {
         return $this->question;
     }
 
-    public function setQuestion(Question $question): static
+    public function setQuestion(?Question $question): void
     {
         $this->question = $question;
-
-        return $this;
     }
 
-    public function getAuthor(): User
+    public function getAuthor(): ?User
     {
         return $this->author;
     }
 
-    public function setAuthor(User $author): static
+    public function setAuthor(?User $author): void
     {
         $this->author = $author;
+    }
 
-        return $this;
+    public function getAuthorNickname(): ?string
+    {
+        return $this->authorNickname;
+    }
+
+    public function setAuthorNickname(?string $authorNickname): void
+    {
+        $this->authorNickname = $authorNickname;
+    }
+
+    public function getAuthorEmail(): ?string
+    {
+        return $this->authorEmail;
+    }
+
+    public function setAuthorEmail(?string $authorEmail): void
+    {
+        $this->authorEmail = $authorEmail;
     }
 
     public function __toString(): string
     {
-        return mb_substr($this->content, 0, 50).(mb_strlen($this->content) > 50 ? '...' : '');
+        $content = $this->content ?? '';
+        return mb_substr($content, 0, 50) . (mb_strlen($content) > 50 ? '...' : '');
     }
 }
