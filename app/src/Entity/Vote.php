@@ -15,14 +15,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: VoteRepository::class)]
 #[ORM\Table(name: 'votes', uniqueConstraints: [
-    new ORM\UniqueConstraint(name: 'uniq_user_answer', columns: ['user_id', 'answer_id'])
+    new ORM\UniqueConstraint(name: 'uniq_user_answer', columns: ['user_id', 'answer_id']),
 ])]
 class Vote
 {
     /**
      * Primary key.
-     *
-     * @var int|null
      */
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -31,8 +29,6 @@ class Vote
 
     /**
      * Answer to which this vote applies.
-     *
-     * @var Answer|null
      */
     #[ORM\ManyToOne(targetEntity: Answer::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -41,8 +37,6 @@ class Vote
 
     /**
      * User who cast the vote.
-     *
-     * @var User|null
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
@@ -51,8 +45,6 @@ class Vote
 
     /**
      * Vote value (+1 or -1).
-     *
-     * @var int
      */
     #[ORM\Column(type: 'integer')]
     #[Assert\Choice(choices: [-1, 1])]
@@ -70,8 +62,6 @@ class Vote
 
     /**
      * Get the associated answer.
-     *
-     * @return Answer|null
      */
     public function getAnswer(): ?Answer
     {
@@ -81,19 +71,17 @@ class Vote
     /**
      * Set the associated answer.
      *
-     * @param Answer|null $answer
      * @return $this
      */
     public function setAnswer(?Answer $answer): static
     {
         $this->answer = $answer;
+
         return $this;
     }
 
     /**
      * Get the user who cast the vote.
-     *
-     * @return User|null
      */
     public function getUser(): ?User
     {
@@ -103,19 +91,17 @@ class Vote
     /**
      * Set the user who cast the vote.
      *
-     * @param User $user
      * @return $this
      */
     public function setUser(User $user): static
     {
         $this->user = $user;
+
         return $this;
     }
 
     /**
      * Get vote value.
-     *
-     * @return int
      */
     public function getValue(): int
     {
@@ -126,6 +112,7 @@ class Vote
      * Set vote value.
      *
      * @param int $value Must be +1 or -1
+     *
      * @return $this
      *
      * @throws \InvalidArgumentException When value is not allowed
@@ -136,6 +123,7 @@ class Vote
             throw new \InvalidArgumentException('Vote value must be +1 or -1.');
         }
         $this->value = $value;
+
         return $this;
     }
 }

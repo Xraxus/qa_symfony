@@ -1,39 +1,56 @@
 <?php
 
-// src/DataFixtures/UserFixture.php
-
 namespace App\DataFixtures;
 
 use App\Entity\User;
-use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends AbstractBaseFixtures
 {
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(UserPasswordHasherInterface $hasher)
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher)
     {
-        $this->hasher = $hasher;
     }
 
-    public function load(ObjectManager $manager): void
+    protected function loadData(): void
     {
-        $user = new User();
-        $user->setEmail('admin@example.com');
-        $user->setRoles(['ROLE_ADMIN']);
-        $user->setPassword($this->hasher->hashPassword($user, 'adminpass'));
-        $manager->persist($user);
-        $this->addReference('user-admin', $user);
+        if (!$this->manager instanceof ObjectManager || !$this->faker instanceof Generator) {
+            return;
+        }
 
-        $user2 = new User();
-        $user2->setEmail('user@example.com');
-        $user2->setRoles(['ROLE_USER']);
-        $user2->setPassword($this->hasher->hashPassword($user2, 'userpass'));
-        $manager->persist($user2);
-        $this->addReference('user-1', $user2);
+        // Tworzymy 10 zwykłych użytkowników
+        $this->createMany(10, 'user', function (int $i) {
+            $user = new User();
+            $user->setEmail(sprintf('user%d@example.com', $i));
+            $user->setNickname(sprintf('usernick%d', $i));
+            $user->setRoles(['ROLE_USER']);
+            $user->setPassword(
+                $this->passwordHasher->hashPassword(
+                    $user,
+                    'user1234'
+                )
+            );
+            $user->setIsBlocked(false);
 
-        $manager->flush();
+            return $user;
+        });
+
+        // Tworzymy 3 adminów
+        $this->createMany(3, 'admin', function (int $i) {
+            $user = new User();
+            $user->setEmail(sprintf('admin%d@example.com', $i));
+            $user->setNickname(sprintf('adminnick%d', $i));
+            $user->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
+            $user->setPassword(
+                $this->passwordHasher->hashPassword(
+                    $user,
+                    'admin1234'
+                )
+            );
+            $user->setIsBlocked(false);
+
+            return $user;
+        });
     }
 }

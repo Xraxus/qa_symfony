@@ -1,21 +1,25 @@
 <?php
-// src/DataFixtures/CategoryFixture.php
+
 namespace App\DataFixtures;
 
 use App\Entity\Category;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class CategoryFixtures extends Fixture
+/**
+ * Class CategoryFixtures.
+ */
+class CategoryFixtures extends AbstractBaseFixtures
 {
-    public function load(ObjectManager $manager): void
+    /**
+     * Load data.
+     */
+    protected function loadData(): void
     {
-        $cat = new Category();
-        $cat->setName('Programming');
-        $cat->setSlug('programming');
-        $manager->persist($cat);
-        $this->addReference('category-programming', $cat);
+        $this->createMany(10, 'category', function (int $i) {
+            $category = new Category();
+            $category->setName($this->faker->unique()->word());
 
-        $manager->flush();
+            return $category;
+        });
     }
 }
