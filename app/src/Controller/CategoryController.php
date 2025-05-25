@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Category;
@@ -23,21 +25,22 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/new', name: 'app_category_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $category = new Category();
         $form = $this->createForm(CategoryForm::class, $category);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($category);
-            $entityManager->flush();
+            $em->persist($category);
+            $em->flush();
 
-            return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Category created successfully.');
+
+            return $this->redirectToRoute('app_category_index', status: Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('category/new.html.twig', [
-            'category' => $category,
             'form' => $form,
         ]);
     }
@@ -51,31 +54,36 @@ final class CategoryController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_category_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Category $category, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(CategoryForm::class, $category);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $em->flush();
 
-            return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+            $this->addFlash('success', 'Category updated successfully.');
+
+            return $this->redirectToRoute('app_category_index', status: Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('category/edit.html.twig', [
-            'category' => $category,
             'form' => $form,
+            'category' => $category,
         ]);
     }
 
     #[Route('/{id}', name: 'app_category_delete', methods: ['POST'])]
-    public function delete(Request $request, Category $category, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Category $category, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$category->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($category);
-            $entityManager->flush();
+        $token = $request->request->get('_token');
+        if ($this->isCsrfTokenValid('delete' . $category->getId(), $token)) {
+            $em->remove($category);
+            $em->flush();
+
+            $this->addFlash('success', 'Category deleted.');
         }
 
-        return $this->redirectToRoute('app_category_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_category_index', status: Response::HTTP_SEE_OTHER);
     }
 }
